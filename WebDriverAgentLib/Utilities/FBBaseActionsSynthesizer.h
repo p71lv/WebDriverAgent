@@ -21,6 +21,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) NSDictionary<NSString *, id> *actionItem;
 /*! Current application instance */
 @property (nonatomic) XCUIApplication *application;
+/*! Current application frame size (optimization)*/
+@property (nonatomic) CGSize applicationFrameSize;
 /*! Action offset in the chain in milliseconds */
 @property (nonatomic) double offset;
 
