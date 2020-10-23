@@ -121,10 +121,21 @@ static NSString *const FB_KEY_ACTIONS = @"actions";
                                      offset:(double)offset
                                       error:(NSError **)error
 {
+  return [self initWithActionItem:actionItem application:application applicationFrameSize:application.frame.size previousItem:previousItem offset:offset error:error];
+}
+
+- (nullable instancetype)initWithActionItem:(NSDictionary<NSString *, id> *)actionItem
+                                application:(XCUIApplication *)application
+                       applicationFrameSize:(CGSize)applicationFrameSize
+                               previousItem:(nullable FBBaseGestureItem *)previousItem
+                                     offset:(double)offset
+                                      error:(NSError **)error
+{
   self = [super init];
   if (self) {
     self.actionItem = actionItem;
     self.application = application;
+    self.applicationFrameSize = applicationFrameSize;
     self.offset = offset;
     _previousItem = previousItem;
     NSNumber *durationObj = FBOptDuration(actionItem, @0, error);
@@ -848,6 +859,7 @@ static NSString *const FB_KEY_ACTIONS = @"actions";
 
   FBW3CGestureItemsChain *chain = [[FBW3CGestureItemsChain alloc] init];
   NSArray<NSDictionary<NSString *, id> *> *processedItems = [self preprocessedActionItemsWith:actionItems];
+  CGSize applicationFrameSize = self.application.frame.size;
   for (NSDictionary<NSString *, id> *actionItem in processedItems) {
     id actionItemType = [actionItem objectForKey:FB_ACTION_ITEM_KEY_TYPE];
     if (![actionItemType isKindOfClass:NSString.class]) {
@@ -867,7 +879,7 @@ static NSString *const FB_KEY_ACTIONS = @"actions";
       return nil;
     }
 
-    FBW3CGestureItem *gestureItem = [[gestureItemClass alloc] initWithActionItem:actionItem application:self.application previousItem:[chain.items lastObject] offset:chain.durationOffset error:error];
+    FBW3CGestureItem *gestureItem = [[gestureItemClass alloc] initWithActionItem:actionItem application:self.application applicationFrameSize:applicationFrameSize previousItem:[chain.items lastObject] offset:chain.durationOffset error:error];
     if (nil == gestureItem) {
       return nil;
     }
